@@ -1,30 +1,39 @@
 # PeaversAlwaysSquare
 
-*Because tanks need squares on their heads, not stars in their eyes.*
+**A World of Warcraft addon that automatically and persistently marks tanks with a square icon, because tanks need squares on their heads, not stars in their eyes.**
 
-## What This Addon Does
+## Overview
 
-Ever been in a dungeon where someone keeps changing your carefully placed raid icon?
-Ever wanted to scream "THE TANK IS ALWAYS THE SQUARE" into voice chat?
-
-Well, scream no more! PeaversAlwaysSquare automatically and relentlessly marks your group's tank with a square icon.
-If someone dares to change it, PeaversAlwaysSquare will immediately change it back, with the quiet persistence of a demon hunter who's spotted a shiny new glaive.
+PeaversAlwaysSquare solves the age-old problem of inconsistent raid markers by relentlessly marking your group's tank with a square icon. If someone dares to change it, the addon will immediately change it back, with unwavering dedication to proper dungeon etiquette.
 
 ## Features
 
 - **Unwavering Dedication**: Automatically marks tanks with the square icon
 - **Stubborn as a Dwarf**: Immediately reapplies the mark if someone changes it
-- **Customizable Iconography**: Change which icon to use with a simple command (but why would you use anything but square? Are you a monster?)
-- **Debugging Tools**: For when things go sideways, like a gnome on a mechanical chicken mount
+- **Customizable Iconography**: Change which icon to use with a simple command
+- **Debugging Tools**: Troubleshooting options when things don't work as expected
 
-## Commands
+## Installation
 
-- `/tm` - Force mark all tanks right now (for the impatient)
-- `/tm icon N` - Change icon ID to N (1-8), if you're one of *those* people who thinks tanks should be skulls
-- `/tm test` - Test all icons on yourself (Warning: May cause mild identity crisis)
-- `/tm debug` - Toggle debug mode (For when you need to see how the sausage is made)
+1. Download from the repository
+2. Extract to your `World of Warcraft/_retail_/Interface/AddOns/` folder
+3. Ensure your folder structure is `Interface\AddOns\PeaversAlwaysSquare\PeaversAlwaysSquare.lua`
+4. Reload your UI
 
-## Icon Reference
+## Usage
+
+- The addon works automatically once installed
+- Tanks in your party or raid will be marked with a square icon
+- The marker will be reapplied if changed by another player
+
+## Configuration
+
+- `/tm` - Force mark all tanks right now
+- `/tm icon N` - Change icon ID to N (1-8)
+- `/tm test` - Test all icons on yourself
+- `/tm debug` - Toggle debug mode
+
+### Icon Reference
 
 | ID | Icon Name | Description |
 |----|-----------|-------------|
@@ -37,32 +46,8 @@ If someone dares to change it, PeaversAlwaysSquare will immediately change it ba
 | 7  | Cross     | For when your healer abandons you |
 | 8  | Skull     | What happens when you pull without a tank |
 
-## Installation
+## Support & Feedback
 
-1. Extract to your `World of Warcraft\_retail_\Interface\AddOns\` folder
-2. Ensure your folder structure is `Interface\AddOns\PeaversAlwaysSquare\PeaversAlwaysSquare.lua`
-4. Reload your UI
-
-## FAQ
-
-**Q: Can I mark healers too?**
-A: No. Healers don't deserve special treatment. They know what they did.
-
-**Q: My tank is refusing to be marked as square. What do I do?**
-A: Time to find a new tank. This one is clearly broken.
-
-**Q: I prefer marking tanks as skulls. Can your addon do that?**
-A: Yes, with `/tm icon 8`, but we'll silently judge you for it.
-
-**Q: Does this work with Classic WoW?**
-A: Like a gnome fits in plate armor. (That means no.)
-
-
-## Legal
-
-PeaversAlwaysSquare is not responsible for:
-- Hurt feelings when someone's creative marking system is overridden
-- Loss of friends who insist tanks should be stars
-- Any existential crises caused by staring at floating squares for too long
+If you encounter any issues with the addon or have ideas for improvement, please submit them through the repository's issue tracker. Your feedback helps make dungeon and raid marking conventions more consistent for everyone.
 
 *"Square tanks, square markers. It's not rocket engineering."*
