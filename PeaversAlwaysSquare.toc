@@ -10,5 +10,9 @@
 
 ## Category-enUS: Peavers
 
+# Utils
+src\Utils\ConfigUI.lua
+src\Utils\SupportUI.lua
+
 # Main
 src\Main.lua

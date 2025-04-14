@@ -1,8 +1,28 @@
-local addonName, PeaversAlwaysSquare = ...
+local addonName, PAS = ...
 local frame = CreateFrame("Frame")
 local SQUARE_ICON = 6
 local checkFrequency = 1.0 -- Check every 1 second
 local debugMode = false
+
+-- Initialize addon when ADDON_LOADED event fires
+local initFrame = CreateFrame("Frame")
+initFrame:RegisterEvent("ADDON_LOADED")
+initFrame:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" and arg1 == addonName then
+        -- Initialize configuration UI if available
+        if PAS.ConfigUI and PAS.ConfigUI.Initialize then
+            PAS.ConfigUI:Initialize()
+        end
+
+        -- Initialize support UI if available
+        if PAS.SupportUI and PAS.SupportUI.Initialize then
+            PAS.SupportUI:Initialize()
+        end
+
+        -- Unregister the ADDON_LOADED event as we don't need it anymore
+        self:UnregisterEvent("ADDON_LOADED")
+    end
+end)
 
 -- Icon names for reference
 local iconNames = {
