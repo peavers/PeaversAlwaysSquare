@@ -8,9 +8,14 @@
 ## Version: 1.0.5
 ## X-Curse-Project-ID: 1235674
 
+## Dependencies: PeaversCommons
+
+## SavedVariables: PeaversAlwaysSquareDB
+
 ## Category-enUS: Peavers
 
 # Utils
+src\Utils\Config.lua
 src\Utils\ConfigUI.lua
 src\Utils\SupportUI.lua
 

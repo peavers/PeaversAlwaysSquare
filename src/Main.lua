@@ -1,28 +1,13 @@
 local addonName, PAS = ...
-local frame = CreateFrame("Frame")
-local SQUARE_ICON = 6
-local checkFrequency = 1.0 -- Check every 1 second
-local debugMode = false
 
--- Initialize addon when ADDON_LOADED event fires
-local initFrame = CreateFrame("Frame")
-initFrame:RegisterEvent("ADDON_LOADED")
-initFrame:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1 == addonName then
-        -- Initialize configuration UI if available
-        if PAS.ConfigUI and PAS.ConfigUI.Initialize then
-            PAS.ConfigUI:Initialize()
-        end
+-- Access the PeaversCommons library
+local PeaversCommons = _G.PeaversCommons
+local Utils = PeaversCommons.Utils
 
-        -- Initialize support UI if available
-        if PAS.SupportUI and PAS.SupportUI.Initialize then
-            PAS.SupportUI:Initialize()
-        end
-
-        -- Unregister the ADDON_LOADED event as we don't need it anymore
-        self:UnregisterEvent("ADDON_LOADED")
-    end
-end)
+-- Initialize addon namespace
+PAS = PAS or {}
+PAS.name = addonName
+PAS.version = C_AddOns.GetAddOnMetadata(addonName, "Version") or "1.0.0"
 
 -- Icon names for reference
 local iconNames = {
@@ -30,20 +15,15 @@ local iconNames = {
     [5] = "Moon", [6] = "Square", [7] = "Cross", [8] = "Skull"
 }
 
--- Register events
-frame:RegisterEvent("GROUP_ROSTER_UPDATE")
-frame:RegisterEvent("READY_CHECK")
-frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-
 -- Function to find and mark the tank
 local function MarkTank()
     if not IsInGroup() then
-        if debugMode then print("PeaversAlwaysSquare: Not in group") end
+        Utils.Debug(PAS, "Not in group")
         return
     end
 
     if IsInRaid() then
-        if debugMode then print("PeaversAlwaysSquare: In raid - disabled") end
+        Utils.Debug(PAS, "In raid - disabled")
         return
     end
 
@@ -53,56 +33,84 @@ local function MarkTank()
         if UnitGroupRolesAssigned(unit) == "TANK" then
             local name = UnitName(unit)
             local currentMark = GetRaidTargetIndex(unit)
-            if currentMark ~= SQUARE_ICON then
-                SetRaidTarget(unit, SQUARE_ICON)
-                if debugMode then
-                    print("PeaversAlwaysSquare: Marked " .. name .. " with Square")
-                end
+            if currentMark ~= PAS.Config.iconId then
+                SetRaidTarget(unit, PAS.Config.iconId)
+                Utils.Debug(PAS, "Marked " .. name .. " with " .. iconNames[PAS.Config.iconId])
             end
             return
         end
     end
 
-    if debugMode then print("PeaversAlwaysSquare: No tank found") end
+    Utils.Debug(PAS, "No tank found")
 end
 
-
--- Timer for periodic checking
-local elapsed = 0
-frame:SetScript("OnUpdate", function(self, sinceLastUpdate)
-    elapsed = elapsed + sinceLastUpdate
-    if elapsed >= checkFrequency then
+-- Register slash commands
+PeaversCommons.SlashCommands:Register(addonName, "tm", {
+    default = function()
+        Utils.Print(PAS, "Manual check performed")
         MarkTank()
-        elapsed = 0
-    end
-end)
-
--- Event handler
-frame:SetScript("OnEvent", function(self, event, ...)
-    if debugMode then print("PeaversAlwaysSquare: Event: " .. event) end
-    MarkTank()
-end)
-
--- Slash command
-SLASH_TANKMARKER1 = "/tm"
-SlashCmdList["TANKMARKER"] = function(msg)
-    if msg == "debug" then
-        debugMode = not debugMode
-        print("PeaversAlwaysSquare: Debug mode " .. (debugMode and "enabled" or "disabled"))
-    elseif msg:match("^icon%s+(%d)$") then
-        local iconId = tonumber(msg:match("^icon%s+(%d)$"))
+    end,
+    debug = function()
+        PAS.Config.debugMode = not PAS.Config.debugMode
+        PAS.Config.DEBUG_ENABLED = PAS.Config.debugMode
+        PAS.Config:Save()
+        Utils.Print(PAS, "Debug mode " .. (PAS.Config.debugMode and "enabled" or "disabled"))
+    end,
+    icon = function(rest)
+        local iconId = tonumber(rest)
         if iconId and iconId >= 1 and iconId <= 8 then
-            SQUARE_ICON = iconId
-            print("PeaversAlwaysSquare: Using icon: " .. iconNames[iconId])
+            PAS.Config.iconId = iconId
+            PAS.Config:Save()
+            Utils.Print(PAS, "Using icon: " .. iconNames[iconId])
         else
-            print("PeaversAlwaysSquare: Invalid icon (use 1-8)")
+            Utils.Print(PAS, "Invalid icon (use 1-8)")
         end
-    else
-        print("PeaversAlwaysSquare: Manual check performed")
-        MarkTank()
+    end,
+    help = function()
+        Utils.Print(PAS, "Commands:")
+        print("  /tm - Manual check")
+        print("  /tm icon N - Set icon (1-8)")
+        print("  /tm debug - Toggle debug mode")
+        print("  /tm config - Open settings")
     end
-end
+})
 
--- Initialization message
-print("|cFF00FF00PeaversAlwaysSquare loaded.|r Disabled in raids.")
-print("Commands: /tm, /tm icon N (1-8), /tm debug")
+-- Initialize the addon
+PeaversCommons.Events:Init(addonName, function()
+    -- Initialize configuration
+    PAS.Config:Initialize()
+    
+    -- Initialize configuration UI
+    if PAS.ConfigUI and PAS.ConfigUI.Initialize then
+        PAS.ConfigUI:Initialize()
+    end
+    
+    -- Initialize support UI
+    if PAS.SupportUI and PAS.SupportUI.Initialize then
+        PAS.SupportUI:Initialize()
+    end
+    
+    -- Register events
+    PeaversCommons.Events:RegisterEvent("GROUP_ROSTER_UPDATE", function()
+        MarkTank()
+    end)
+    
+    PeaversCommons.Events:RegisterEvent("READY_CHECK", function()
+        MarkTank()
+    end)
+    
+    PeaversCommons.Events:RegisterEvent("PLAYER_ENTERING_WORLD", function()
+        MarkTank()
+    end)
+    
+    -- Set up periodic checking
+    PeaversCommons.Events:RegisterOnUpdate(PAS.Config.checkFrequency, function()
+        if PAS.Config.enabled then
+            MarkTank()
+        end
+    end, "PAS_TankMarker")
+    
+    -- Initialization message
+    Utils.Print(PAS, "Loaded! Disabled in raids.")
+    Utils.Print(PAS, "Type /tm help for commands")
+end)
