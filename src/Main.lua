@@ -16,7 +16,7 @@ local iconNames = {
 }
 
 -- Function to find and mark the tank
-local function MarkTank()
+function MarkTank()
 	if not IsInGroup() then
 		Utils.Debug(PAS, "Not in group")
 		return
@@ -43,6 +43,9 @@ local function MarkTank()
 
 	Utils.Debug(PAS, "No tank found")
 end
+
+-- Make the function globally accessible
+_G.MarkTank = MarkTank
 
 -- Register slash commands
 PeaversCommons.SlashCommands:Register(addonName, "pas", {
