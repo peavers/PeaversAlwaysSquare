@@ -1,31 +1,19 @@
-local _, addon = ...
+local addonName, PAS = ...
 
 local ConfigUI = {}
-addon.ConfigUI = ConfigUI
+PAS.ConfigUI = ConfigUI
 
+-- Create the options panel for this addon
 function ConfigUI:InitializeOptions()
-	local panel = CreateFrame("Frame")
-	panel.name = "PeaversAlwaysSquare"
-
-	panel.layoutIndex = 1
-	panel.OnShow = function(self)
-		return true
-	end
-
-	addon.mainCategory = Settings.RegisterCanvasLayoutCategory(panel, panel.name)
-	addon.mainCategory.ID = panel.name
-	Settings.RegisterAddOnCategory(addon.mainCategory)
-
-	panel.OnRefresh = function()
-	end
-	panel.OnCommit = function()
-	end
-	panel.OnDefault = function()
-	end
-
-	return panel
+    -- No need to manually create the main panel anymore
+    -- PeaversCommons SupportUI will handle this automatically
+    
+    -- Add any specific configuration options for this addon here
+    -- For example, you could add options to toggle features, adjust settings, etc.
+    
+    return nil
 end
 
 function ConfigUI:Initialize()
-	self:InitializeOptions()
+    self.panel = self:InitializeOptions()
 end
