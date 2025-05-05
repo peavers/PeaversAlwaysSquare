@@ -92,6 +92,11 @@ PeaversCommons.Events:Init(addonName, function()
 	if PAS.SupportUI and PAS.SupportUI.Initialize then
 		PAS.SupportUI:Initialize()
 	end
+	
+	-- Initialize patrons support
+	if PAS.Patrons and PAS.Patrons.Initialize then
+		PAS.Patrons:Initialize()
+	end
 
 	-- Register events
 	PeaversCommons.Events:RegisterEvent("GROUP_ROSTER_UPDATE", function()
@@ -226,6 +231,7 @@ PeaversCommons.Events:Init(addonName, function()
 			-- Store the category
 			PAS.directCategory = category
 			PAS.directPanel = mainPanel
+			PAS.supportPanel = mainPanel  -- Explicitly set supportPanel for patron display
 
 			-- Register settings panel as subcategory
 			local settingsCategory = Settings.RegisterCanvasLayoutSubcategory(category, settingsPanel, settingsPanel.name)
